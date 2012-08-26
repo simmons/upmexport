@@ -757,8 +757,8 @@ filename = sys.argv[1]
 
 # open the database file
 f = open(filename, 'r')
-x = f.read(3)
-if (x != FILE_HEADER):
+header = f.read(3)
+if (header != FILE_HEADER):
     raise Exception("This does not appear to be a UPM database.")
 
 # read the version
@@ -769,7 +769,6 @@ if (db_version != 3):
 # collect the password
 print "password:",
 password = raw_input()
-print "hello \"%s\"" % x
 
 # decrypt the AES-encrypted data
 salt = f.read(SALT_LENGTH)
