@@ -674,7 +674,6 @@ def generateRandomKey(keysize):
 
 import sys
 import hashlib
-import copy
 import re
 
 FILE_HEADER='UPM'
@@ -798,49 +797,53 @@ while p<len(plaintext):
 # reverse the list for popping
 values = values[::-1]
 
-# report!
+# extract data
 
 sync_revision = int(values.pop())
 sync_url = values.pop()
 sync_credentials = values.pop()
-print "# revision=%d url=%s credentials=%s" % (sync_revision, sync_url, sync_credentials)
 
-# make a copy of the data for use by the "long-form" output, below.
-longform_values = copy.copy(values)
-
-format = "%-20s %-35s %-10s"
-print format % ("service", "username", "password")
-print format % ('-------------------','----------------------------------','---------')
+entries = []
 while len(values) > 0:
     account_name = values.pop()
     user_id = values.pop()
     password = values.pop()
     url = values.pop()
     notes = values.pop()
+    entries.append({
+        'name': account_name,
+        'user': user_id,
+        'pass': password,
+        'url':  url,
+        'notes': notes
+    })
 
-    print format % (account_name,user_id,password)
+# sort by account name
+entries.sort(key=lambda x: x["name"].lower())
 
-print
+# report!
+
+print "# revision=%d url=%s credentials=%s" % (sync_revision, sync_url, sync_credentials)
+format = "%-20s %-35s %-10s"
+print format % ("service", "username", "password")
+print format % ('-------------------','----------------------------------','---------')
+for entry in entries:
+    print format % (entry["name"],entry["user"],entry["pass"])
+
 print
 print "Long-form output (including URLs and notes)"
 print "-------------------------------------------"
 print
 
-while len(longform_values) > 0:
-    account_name = longform_values.pop()
-    user_id = longform_values.pop()
-    password = longform_values.pop()
-    url = longform_values.pop()
-    notes = longform_values.pop()
-
+for entry in entries:
     # format notes
-    notes = notes.strip()
+    notes = entry["notes"].strip()
     notes = re.sub(r'(\r?\n)',r'\1          ',notes)
 
-    print "Account: ",account_name
-    print "Username:",user_id
-    print "Password:",password
-    print "URL:     ",url
+    print "Account: ",entry["name"]
+    print "Username:",entry["user"]
+    print "Password:",entry["pass"]
+    print "URL:     ",entry["url"]
     print "Notes:   ",notes
     print
 
