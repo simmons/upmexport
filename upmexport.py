@@ -675,6 +675,8 @@ def generateRandomKey(keysize):
 import sys
 import hashlib
 import re
+from datetime import datetime
+from pytz import reference
 
 FILE_HEADER='UPM'
 SALT_LENGTH = 8
@@ -823,6 +825,7 @@ entries.sort(key=lambda x: x["name"].lower())
 
 # report!
 
+print "#", datetime.now(reference.LocalTimezone()).strftime('%a %b %d %T %Y %Z')
 print "# revision=%d url=%s credentials=%s" % (sync_revision, sync_url, sync_credentials)
 format = "%-20s %-35s %-10s"
 print format % ("service", "username", "password")
