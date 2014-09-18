@@ -674,6 +674,8 @@ def generateRandomKey(keysize):
 
 import sys
 import hashlib
+import copy
+import re
 
 FILE_HEADER='UPM'
 SALT_LENGTH = 8
@@ -803,6 +805,9 @@ sync_url = values.pop()
 sync_credentials = values.pop()
 print "# revision=%d url=%s credentials=%s" % (sync_revision, sync_url, sync_credentials)
 
+# make a copy of the data for use by the "long-form" output, below.
+longform_values = copy.copy(values)
+
 format = "%-20s %-35s %-10s"
 print format % ("service", "username", "password")
 print format % ('-------------------','----------------------------------','---------')
@@ -815,4 +820,27 @@ while len(values) > 0:
 
     print format % (account_name,user_id,password)
 
+print
+print
+print "Long-form output (including URLs and notes)"
+print "-------------------------------------------"
+print
+
+while len(longform_values) > 0:
+    account_name = longform_values.pop()
+    user_id = longform_values.pop()
+    password = longform_values.pop()
+    url = longform_values.pop()
+    notes = longform_values.pop()
+
+    # format notes
+    notes = notes.strip()
+    notes = re.sub(r'(\r?\n)',r'\1          ',notes)
+
+    print "Account: ",account_name
+    print "Username:",user_id
+    print "Password:",password
+    print "URL:     ",url
+    print "Notes:   ",notes
+    print
 
