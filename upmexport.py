@@ -827,7 +827,7 @@ entries.sort(key=lambda x: x["name"].lower())
 
 print "#", datetime.now(reference.LocalTimezone()).strftime('%a %b %d %T %Y %Z')
 print "# revision=%d url=%s credentials=%s" % (sync_revision, sync_url, sync_credentials)
-format = "%-20s %-35s %-10s"
+format = "%-28s %-35s %-10s"
 print format % ("service", "username", "password")
 print format % ('-------------------','----------------------------------','---------')
 for entry in entries:
